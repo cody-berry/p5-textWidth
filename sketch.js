@@ -31,7 +31,7 @@ let font
  * chrome; I have it set at 125%, a significant bump up from default.
  * @type {number}
  */
-const FONT_SIZE = 18
+const FONT_SIZE = 25
 const LETTER_SPACING = 1.25
 const SPACE_WIDTH = FONT_SIZE / 2
 
@@ -43,32 +43,72 @@ function preload() {
 
 
 function setup() {
-    createCanvas(640, 360, WEBGL)
+    createCanvas(FONT_SIZE*2, FONT_SIZE*3, WEBGL)
     colorMode(HSB, 360, 100, 100, 100)
     textFont(font, FONT_SIZE)
 
     fill(0, 0, 100)
     noStroke()
 
+    // it automatically translated to width/2, height/2
+    translate(-width/2, -height/2)
+
     background(234, 34, 24)
 
     // let input = "I couldn't even get one pixel working because my generatePixel function didn't work. I need four nested loops to be able to complete my task because I don't know how to do this otherwise. It seems like I'm loading just fine."
 
     // displayPassage(input)
-    // console.log(charWidth("i"))
-    text("y", 0, height)
-    let char = "s"
+    // console.log(charWidth("i")
+    let char = "M"
 
     /* do charWidth in setup first so you can see the tiny canvas and letters */
     /* encapsulate this logic later in a function */
-    let g = createGraphics(FONT_SIZE, FONT_SIZE * 1.5)
-    g.colorMode(HSB, 360, 100, 100, 100)
-    g.textFont(font, FONT_SIZE)
-    g.background(0, 0, 0)
-    g.fill(0, 0, 100)
-    g.text(char, 0, textAscent())
+    // let g = createGraphics(FONT_SIZE, FONT_SIZE * 1.5)
+    // colorMode(HSB, 360, 100, 100, 100)
+    colorMode(RGB, 100, 100, 100, 255)
+    textFont(font, FONT_SIZE)
+    background(0, 0, 0, 100)
+    fill(255, 255, 255)
+    text(char, 0, textAscent())
+    // our maximum x
+    let maxX = 0;
+    // our pixel density
+    let d = pixelDensity()
+    loadPixels()
 
-    image(g, 0, 0)
+    for (let x = 0; x < width; x++) {
+        for (let y = 0; y < height; y++) {
+            // the pixels starting component
+            let index = (y * width + x)*d*d*4
+            // the color components, red, green, blue, and alpha
+            // the last non-black pixel we see is the maximum x
+            let redFail = (pixels[index] !== 0)
+            let blueFail = (pixels[index+1] !== 0)
+            let greenFail = (pixels[index+2] !== 0)
+            let alphaFail = (pixels[index+3] !== 255)
+            console.log(index)
+            console.log(pixels[index])
+            console.log(pixels[index+1])
+            console.log(pixels[index+2])
+            console.log(pixels[index+3])
+            stroke(pixels[index], pixels[index+1], pixels[index+2], pixels[index+3])
+            strokeWeight(0)
+            point(x, y)
+
+            if (redFail && blueFail && greenFail && alphaFail) {
+                maxX = max(x, maxX)
+                // stroke(pixels[index], pixels[index+1], pixels[index+2], pixels[index+3])
+                // strokeWeight(0)
+                // point(x, y)
+            }
+        }
+    }
+
+    // updatePixels()
+
+    console.log(maxX)
+
+    // image(g, 0, 0)
 }
 
 
@@ -155,7 +195,7 @@ function getPixel(x, y, pixelDensity) {
 /**
  * Original code from a forum post that inspired this brute-force method of
  * finding a character's textWidth.
- */x
+ */
 function archive() {
     let max_x = 0 // the furthest right this character displays on screen
     for (let x = 0; x < width; x++) {

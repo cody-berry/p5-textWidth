@@ -52,10 +52,23 @@ function setup() {
 
     background(234, 34, 24)
 
-    let input = "I couldn't even get one pixel working because my generatePixel function didn't work. I need four nested loops to be able to complete my task because I don't know how to do this otherwise. It seems like I'm loading just fine."
+    // let input = "I couldn't even get one pixel working because my generatePixel function didn't work. I need four nested loops to be able to complete my task because I don't know how to do this otherwise. It seems like I'm loading just fine."
 
-    displayPassage(input)
+    // displayPassage(input)
+    // console.log(charWidth("i"))
+    text("y", 0, height)
+    let char = "s"
 
+    /* do charWidth in setup first so you can see the tiny canvas and letters */
+    /* encapsulate this logic later in a function */
+    let g = createGraphics(FONT_SIZE, FONT_SIZE * 1.5)
+    g.colorMode(HSB, 360, 100, 100, 100)
+    g.textFont(font, FONT_SIZE)
+    g.background(0, 0, 0)
+    g.fill(0, 0, 100)
+    g.text(char, 0, textAscent())
+
+    image(g, 0, 0)
 }
 
 
@@ -94,7 +107,28 @@ function charWidth(char) {
     g.textFont(font, FONT_SIZE)
     g.background(0, 0, 0)
     g.fill(0, 0, 100)
+    g.text(char, 0, 0)
 
+    // our maximum x
+    let maxX = 0;
+
+    for (let x = 0; x < g.width; x++) {
+        for (let y = 0; y < g.height; y++) {
+            // the pixels starting component
+            let startComponent = (y * g.width + x)*4
+            // the color components, red, green, blue, and alpha
+            // the last non-black pixel we see is the maximum x
+            let redFail = (g.pixels[startComponent] !== 0)
+            let blueFail = (g.pixels[startComponent+1] !== 0)
+            let greenFail = (g.pixels[startComponent+2] !== 0)
+            let alphaFail = (g.pixels[startComponent+3] !== 255)
+
+            if (redFail && blueFail && greenFail && alphaFail) {
+                maxX = max(x, maxX)
+            }
+        }
+    }
+    return maxX
 }
 
 
@@ -121,7 +155,7 @@ function getPixel(x, y, pixelDensity) {
 /**
  * Original code from a forum post that inspired this brute-force method of
  * finding a character's textWidth.
- */
+ */x
 function archive() {
     let max_x = 0 // the furthest right this character displays on screen
     for (let x = 0; x < width; x++) {

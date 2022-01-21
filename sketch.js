@@ -31,7 +31,7 @@ let font
  * chrome; I have it set at 125%, a significant bump up from default.
  * @type {number}
  */
-const FONT_SIZE = 25
+const FONT_SIZE = 36
 const LETTER_SPACING = 1.25
 const SPACE_WIDTH = FONT_SIZE / 2
 
@@ -43,72 +43,57 @@ function preload() {
 
 
 function setup() {
-    createCanvas(FONT_SIZE*2, FONT_SIZE*3, WEBGL)
+    createCanvas(50, 50)
+
     colorMode(HSB, 360, 100, 100, 100)
+    background(0, 0, 0)
+
     textFont(font, FONT_SIZE)
 
     fill(0, 0, 100)
-    noStroke()
+    let char = 'i'
+    let maxX = 0; // our maximum x
+    let d = pixelDensity() // our pixel density
 
-    // it automatically translated to width/2, height/2
-    translate(-width/2, -height/2)
-
-    background(234, 34, 24)
-
-    // let input = "I couldn't even get one pixel working because my generatePixel function didn't work. I need four nested loops to be able to complete my task because I don't know how to do this otherwise. It seems like I'm loading just fine."
-
-    // displayPassage(input)
-    // console.log(charWidth("i")
-    let char = "M"
-
-    /* do charWidth in setup first so you can see the tiny canvas and letters */
-    /* encapsulate this logic later in a function */
-    // let g = createGraphics(FONT_SIZE, FONT_SIZE * 1.5)
-    // colorMode(HSB, 360, 100, 100, 100)
-    colorMode(RGB, 100, 100, 100, 255)
-    textFont(font, FONT_SIZE)
-    background(0, 0, 0, 100)
-    fill(255, 255, 255)
     text(char, 0, textAscent())
-    // our maximum x
-    let maxX = 0;
-    // our pixel density
-    let d = pixelDensity()
     loadPixels()
 
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
             // the pixels starting component
-            let index = (y * width + x)*d*d*4
+            let index = (y * width + x)*d*4
             // the color components, red, green, blue, and alpha
             // the last non-black pixel we see is the maximum x
-            let redFail = (pixels[index] !== 0)
-            let blueFail = (pixels[index+1] !== 0)
-            let greenFail = (pixels[index+2] !== 0)
-            let alphaFail = (pixels[index+3] !== 255)
-            console.log(index)
-            console.log(pixels[index])
-            console.log(pixels[index+1])
-            console.log(pixels[index+2])
-            console.log(pixels[index+3])
-            stroke(pixels[index], pixels[index+1], pixels[index+2], pixels[index+3])
-            strokeWeight(0)
-            point(x, y)
+            let redNotZero = (pixels[index] !== 0)
+            let greenNotZero = (pixels[index+1] !== 0)
+            let blueNotZero = (pixels[index+2] !== 0)
+            // let alphaFail = (pixels[index+3] )
+            // console.log(index)
+            // console.log("----------------")
+            // console.log(pixels[index])
+            // console.log(pixels[index+1])
+            // console.log(pixels[index+2])
+            // console.log(pixels[index+3])
+            // console.log(redFail)
+            // console.log(greenFail)
+            // console.log(blueFail)
+            // console.log(alphaFail)
+            // stroke(pixels[index], pixels[index+1], pixels[index+2], pixels[index+3])
+            // strokeWeight(0)
+            // point(x, y)
 
-            if (redFail && blueFail && greenFail && alphaFail) {
+            /**
+             * if we detect a non-background pixel, that becomes our new maxX
+             * a background pixel is pure black, meaning r=0, g=0, and b=0
+             * if any of the three are not zero, then the pixel can't be black
+             */
+            let notBlack = redNotZero || greenNotZero || blueNotZero
+            if (notBlack) {
                 maxX = max(x, maxX)
-                // stroke(pixels[index], pixels[index+1], pixels[index+2], pixels[index+3])
-                // strokeWeight(0)
-                // point(x, y)
             }
         }
     }
-
-    // updatePixels()
-
     console.log(maxX)
-
-    // image(g, 0, 0)
 }
 
 

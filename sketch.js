@@ -43,15 +43,15 @@ function preload() {
 
 
 function setup() {
-    createCanvas(50, 50)
+    createCanvas(640, 360)
 
     colorMode(HSB, 360, 100, 100, 100)
-    background(0, 0, 0)
+    background(234, 34, 24)
 
     textFont(font, FONT_SIZE)
     let input = "I couldn't even get one pixel working because my generatePixel function didn't work. I need four nested loops to be able to complete my task because I don't know how to do this otherwise. It seems like I'm loading just fine."
 
-    console.log(wordWidth(input))
+    displayPassage(input)
 }
 
 
@@ -60,6 +60,48 @@ function draw() {}
 
 function displayPassage(passage) {
     let cursor = new p5.Vector(0, 100)
+    let i = 0
+    fill(0, 0, 100)
+    for (let c of passage) {
+        if (c === " ") {
+            // we don't want to space the letters into a space.
+            cursor.x += SPACE_WIDTH - LETTER_SPACING
+        } else {
+            // We need to make room for the character and some spacing,
+            // determined by L
+            text(c, cursor.x, cursor.y)
+            cursor.x += charWidth(c) + LETTER_SPACING
+        }
+        // word wrap time!
+        // if the current character is a space or this is the first word...
+        if (c === " " || i === 0) {
+            // we find the rest of the passage...
+            let restOfPassage = passage.substring(i+1)
+            // we find the index of the next space...
+            let nextDelimiterIndex = restOfPassage.indexOf(" ") + i+1
+            // wait, but if nextDelimiterIndex is i, that means it desn't
+            // know where the next space is. that means we need to set it to
+            // th end of the passage.
+            if (nextDelimiterIndex === i) {
+                nextDelimiterIndex = passage.length
+            }
+            // we find the current word...
+            let currentWord = passage.substring(i, nextDelimiterIndex)
+            console.log(currentWord)
+            // and unusually, we use wordWidth to find the word width of the
+            // current word!
+            let textWidth = wordWidth(currentWord)
+            if (textWidth + cursor.x > width) {
+                cursor.x = 0;
+                cursor.y += textAscent() + textDescent() + 6
+            }
+        }
+        i++
+    }
+    if (passage[-1] !== " ") {
+        cursor.x -= LETTER_SPACING
+    }
+
 }
 
 

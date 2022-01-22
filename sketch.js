@@ -51,48 +51,34 @@ function setup() {
     textFont(font, FONT_SIZE)
 
     fill(0, 0, 100)
-    let char = 'i'
+    let char = 'h'
     let maxX = 0; // our maximum x
     let d = pixelDensity() // our pixel density
 
     text(char, 0, textAscent())
+
     loadPixels()
 
     for (let x = 0; x < width; x++) {
         for (let y = 0; y < height; y++) {
-            // the pixels starting component
-            let index = (y * width + x)*d*4
-            // the color components, red, green, blue, and alpha
-            // the last non-black pixel we see is the maximum x
-            let redNotZero = (pixels[index] !== 0)
-            let greenNotZero = (pixels[index+1] !== 0)
-            let blueNotZero = (pixels[index+2] !== 0)
-            // let alphaFail = (pixels[index+3] )
-            // console.log(index)
-            // console.log("----------------")
-            // console.log(pixels[index])
-            // console.log(pixels[index+1])
-            // console.log(pixels[index+2])
-            // console.log(pixels[index+3])
-            // console.log(redFail)
-            // console.log(greenFail)
-            // console.log(blueFail)
-            // console.log(alphaFail)
-            // stroke(pixels[index], pixels[index+1], pixels[index+2], pixels[index+3])
-            // strokeWeight(0)
-            // point(x, y)
-
+            let i = 4*d*(y*width + x)
+            let redNotZero = (pixels[i] !== 0)
+            let greenNotZero = (pixels[i+1] !== 0)
+            let blueNotZero = (pixels[i+2] !== 0)
             /**
-             * if we detect a non-background pixel, that becomes our new maxX
-             * a background pixel is pure black, meaning r=0, g=0, and b=0
-             * if any of the three are not zero, then the pixel can't be black
+             * What does it mean for a pixel to be non-black?
+             * It means that one of the red, blue, or green not zeros have
+             * to be true.
              */
             let notBlack = redNotZero || greenNotZero || blueNotZero
             if (notBlack) {
-                maxX = max(x, maxX)
+                maxX = x
+                stroke(100, 100, 100)
+                point(x, y)
             }
         }
     }
+
     console.log(maxX)
 }
 

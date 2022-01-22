@@ -31,7 +31,7 @@ let font
  * chrome; I have it set at 125%, a significant bump up from default.
  * @type {number}
  */
-const FONT_SIZE = 36
+const FONT_SIZE = 18
 const LETTER_SPACING = 1.25
 const SPACE_WIDTH = FONT_SIZE / 2
 
@@ -49,37 +49,11 @@ function setup() {
     background(0, 0, 0)
 
     textFont(font, FONT_SIZE)
+    let char = "j"
 
-    fill(0, 0, 100)
-    let char = 'h'
-    let maxX = 0; // our maximum x
-    let d = pixelDensity() // our pixel density
+    console.log(charWidth(char))
 
-    text(char, 0, textAscent())
-
-    loadPixels()
-
-    for (let x = 0; x < width; x++) {
-        for (let y = 0; y < height; y++) {
-            let i = 4*d*(y*width + x)
-            let redNotZero = (pixels[i] !== 0)
-            let greenNotZero = (pixels[i+1] !== 0)
-            let blueNotZero = (pixels[i+2] !== 0)
-            /**
-             * What does it mean for a pixel to be non-black?
-             * It means that one of the red, blue, or green not zeros have
-             * to be true.
-             */
-            let notBlack = redNotZero || greenNotZero || blueNotZero
-            if (notBlack) {
-                maxX = x
-                stroke(100, 100, 100)
-                point(x, y)
-            }
-        }
-    }
-
-    console.log(maxX)
+    text(char, 0, 0)
 }
 
 
@@ -119,23 +93,29 @@ function charWidth(char) {
     g.background(0, 0, 0)
     g.fill(0, 0, 100)
     g.text(char, 0, 0)
+    let maxX = 0; // our maximum x
+    let d = g.pixelDensity() // our pixel density
 
-    // our maximum x
-    let maxX = 0;
+    g.text(char, 0, textAscent())
+
+    g.loadPixels()
 
     for (let x = 0; x < g.width; x++) {
         for (let y = 0; y < g.height; y++) {
-            // the pixels starting component
-            let startComponent = (y * g.width + x)*4
-            // the color components, red, green, blue, and alpha
-            // the last non-black pixel we see is the maximum x
-            let redFail = (g.pixels[startComponent] !== 0)
-            let blueFail = (g.pixels[startComponent+1] !== 0)
-            let greenFail = (g.pixels[startComponent+2] !== 0)
-            let alphaFail = (g.pixels[startComponent+3] !== 255)
-
-            if (redFail && blueFail && greenFail && alphaFail) {
-                maxX = max(x, maxX)
+            let i = 4*d*(y*g.width + x)
+            let redNotZero = (g.pixels[i] !== 0)
+            let greenNotZero = (g.pixels[i+1] !== 0)
+            let blueNotZero = (g.pixels[i+2] !== 0)
+            /**
+             * What does it mean for a pixel to be non-black?
+             * It means that one of the red, blue, or green not zeros have
+             * to be true.
+             */
+            let notBlack = redNotZero || greenNotZero || blueNotZero
+            if (notBlack) {
+                maxX = x
+                // stroke(100, 100, 100)
+                // point(x, y)
             }
         }
     }

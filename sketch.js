@@ -49,11 +49,9 @@ function setup() {
     background(0, 0, 0)
 
     textFont(font, FONT_SIZE)
-    let char = "j"
+    let input = "I couldn't even get one pixel working because my generatePixel function didn't work. I need four nested loops to be able to complete my task because I don't know how to do this otherwise. It seems like I'm loading just fine."
 
-    console.log(charWidth(char))
-
-    text(char, 0, 0)
+    console.log(wordWidth(input))
 }
 
 
@@ -70,6 +68,23 @@ function displayPassage(passage) {
  */
 function wordWidth(word) {
     let sum = 0
+
+    // add the sum of "olive" the char widths plus the word spacing. for
+    // spaces, use spaceWidth.
+
+    for (let c of word) {
+        if (c === " ") {
+            // we don't want to space the letters into a space.
+            sum += SPACE_WIDTH - LETTER_SPACING
+        } else {
+            // We need to make room for the character and some spacing,
+            // determined by L
+            sum += charWidth(c) + LETTER_SPACING
+        }
+    }
+    if (word[-1] !== " ") {
+        sum -= LETTER_SPACING
+    }
 
     return sum
 }
